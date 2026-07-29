@@ -1,0 +1,112 @@
+1. Document Ingestion
+PDF
+DOCX
+TXT
+URLs
+
+
+
+2. Parsing
+
+Instead of extracting only text,
+
+extract
+
+headings
+tables
+figures
+equations
+references
+page numbers
+
+These become metadata.
+
+
+
+3. Chunking
+
+Not fixed-size chunks.
+
+Use semantic chunking.
+
+Example
+
+Introduction
+
+Related Work
+
+Methodology
+
+Results
+
+Conclusion
+
+Each section becomes meaningful chunks.
+
+
+
+
+
+4. Embedding
+
+Use
+
+BGE
+Jina
+e5
+OpenAI embeddings
+
+
+
+
+5. Vector Database
+Chroma
+
+
+
+
+
+
+
+
+Retrieval
+
+Question
+
+↓
+
+Rewrite query
+
+↓
+
+Hybrid Search
+(Vector + BM25)
+
+↓
+
+Reranker
+
+↓
+
+LLM
+
+
+
+
+
+
+
+Agent
+
+The agent decides
+
+Need RAG?
+
+Need Web Search?
+
+Need Summarization?
+
+Need Citation?
+
+Need Compare Papers?
+
