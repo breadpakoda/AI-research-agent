@@ -1,20 +1,18 @@
 import fitz
 
 
-def parse(file_path:str)->str:
+def parse(file_path: str) -> str:
     """
-    Extracts the pdf file's text while preserving the file structure
+    Extract text from a PDF while preserving page order.
     """
-
     try:
-        pdf=fitz.open(file_path)
-        text=""
+        pages = []
 
-        for page in pdf:
-            text+=page.get_text("text")+"\n"
-        pdf.close()
+        with fitz.open(file_path) as pdf:
+            for page in pdf:
+                pages.append(page.get_text("text"))
 
-        return text.strip()
+        return "\n".join(pages)
 
     except Exception as e:
-        raise Exception(f"Failed to read the file: {e}")
+        raise RuntimeError(f"Failed to read PDF: {e}")
