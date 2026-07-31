@@ -23,4 +23,4 @@ def parse(file_name):
         return docx_parser.parse(file_name)
 
 
-print(parse(input("Enter the file name: ")))
+# print(parse(input("Enter the file name: ")))
