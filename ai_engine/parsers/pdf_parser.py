@@ -1,18 +1,23 @@
+import re
+
 import fitz
 
 
 def parse(file_path: str) -> str:
-    """
-    Extract text from a PDF while preserving page order.
-    """
     try:
-        pages = []
+        paragraphs = []
 
         with fitz.open(file_path) as pdf:
             for page in pdf:
-                pages.append(page.get_text("text"))
+                page_text = page.get_text("text")
+                page_paragraphs = re.split(r"\n\s*\n+", page_text)
 
-        return "\n".join(pages)
+                for paragraph in page_paragraphs:
+                    cleaned = " ".join(paragraph.split())
+                    if cleaned:
+                        paragraphs.append(cleaned)
+
+        return paragraphs
 
     except Exception as e:
-        raise RuntimeError(f"Failed to read PDF: {e}")
+        raise Exception(f"Failed to parse PDF: {e}")

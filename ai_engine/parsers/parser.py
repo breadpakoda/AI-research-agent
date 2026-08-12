@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+
 import pdf_parser
 import docx_parser
 import txt_parser
@@ -14,13 +16,20 @@ def parse(file_name):
         raise ValueError(f"Unsupported file type: {extension}")
 
     if extension == ".pdf":
-        return pdf_parser.parse(file_name)
+        content = pdf_parser.parse(file_name)
+    elif extension == ".txt":
+        content = txt_parser.parse(file_name)
+    elif extension == ".docx":
+        content = docx_parser.parse(file_name)
+    else:
+        raise ValueError(f"Unsupported file type: {extension}")
 
-    if extension == ".txt":
-        return txt_parser.parse(file_name)
+    metadata = {
+        "file_name": os.path.basename(file_name),
+        "file_size": os.path.getsize(file_name),
+        "file_type": extension,
+    }
 
-    if extension == ".docx":
-        return docx_parser.parse(file_name)
+    return {"content": content, "metadata": metadata}
 
 
-# print(parse(input("Enter the file name: ")))
