@@ -16,3 +16,6 @@ def parse(file_path: str) -> str:
 
     except Exception as e:
         raise Exception(f"Failed to parse TXT: {e}")
+
+
+# print(parse("parsers/aa.txt"))

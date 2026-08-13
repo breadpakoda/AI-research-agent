@@ -1,1 +1,108 @@
+this is what i have made currently
+how should the final json look  for the parser modules?
 
+I would make the parser output consistent across all three formats:
+
+{
+  "metadata": {
+    "filename": "research_paper.pdf",
+    "file_size": 245760,
+    "format": ".pdf"
+  },
+  "content": [
+    {
+      "page": 1,
+      "text": "Text extracted from page 1..."
+    },
+    {
+      "page": 2,
+      "text": "Text extracted from page 2..."
+    }
+  ]
+}
+
+But there's one issue: DOCX doesn't have reliable page numbers.
+
+So I'd make content generic:
+
+{
+  "metadata": {
+    "filename": "research_paper.docx",
+    "file_size": 245760,
+    "format": ".docx"
+  },
+  "content": [
+    {
+      "text": "First paragraph..."
+    },
+    {
+      "text": "Second paragraph..."
+    }
+  ]
+}
+
+For TXT:
+
+{
+  "metadata": {
+    "filename": "notes.txt",
+    "file_size": 12000,
+    "format": ".txt"
+  },
+  "content": [
+    {
+      "text": "Complete text of the file..."
+    }
+  ]
+}
+However, I'd make one change
+
+Since the chunker will eventually need to know the source location for citations, PDF page information is valuable.
+
+So I'd use:
+
+{
+  "metadata": {
+    "filename": "research_paper.pdf",
+    "file_size": 245760,
+    "format": ".pdf"
+  },
+  "content": [
+    {
+      "location": {
+        "page": 1
+      },
+      "text": "..."
+    },
+    {
+      "location": {
+        "page": 2
+      },
+      "text": "..."
+    }
+  ]
+}
+
+For DOCX:
+
+{
+  "metadata": {
+    "filename": "report.docx",
+    "file_size": 245760,
+    "format": ".docx"
+  },
+  "content": [
+    {
+      "location": {
+        "paragraph": 1
+      },
+      "text": "..."
+    }
+  ]
+}
+
+This gives you a common structure while allowing each parser to provide whatever location information is naturally available.
+
+I would use this second design. It will make the transition from parser → chunker → vector DB → citations much cleaner.
+
+suppose i send the paragraphes , then will it be suitable fir the splitter ?

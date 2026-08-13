@@ -21,3 +21,6 @@ def parse(file_path: str) -> str:
 
     except Exception as e:
         raise Exception(f"Failed to parse PDF: {e}")
+
+
+# print(parse("parsers/Agentic AI Roadmap.pdf"))

@@ -15,4 +15,5 @@ def parse(file_path: str) -> str:
     except Exception as e:
         raise Exception(f"Failed to parse DOCX: {e}")
 
+# print(parse("parsers/langchain.docx"))
 

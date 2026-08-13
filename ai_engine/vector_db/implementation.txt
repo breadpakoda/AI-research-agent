@@ -1,1 +1,161 @@
-nothihg
+chroma_db.py — Implementation Plan
+
+The module should have one main responsibility: store and retrieve your embedded chunks using ChromaDB.
+
+1. Initialize ChromaDB
+
+Create/connect to a persistent Chroma database.
+
+ChromaDB
+   ↓
+Collection
+
+Use a persistent directory so data survives when the program exits.
+
+2. Create/Get Collection
+
+Create one collection for your research documents.
+
+Example:
+
+research_documents
+
+The module should get the existing collection if it already exists rather than creating duplicates.
+
+3. Define the add() function
+
+Input:
+
+[
+    {
+        "chunk_id": 0,
+        "text": "...",
+        "embedding": [...],
+        "metadata": {...}
+    }
+]
+
+The function should extract:
+
+chunk_id   → Chroma ID
+text       → Chroma document
+embedding  → Chroma embedding
+metadata   → Chroma metadata
+
+Then store them.
+
+4. Handle IDs
+
+Don't use only:
+
+0
+1
+2
+
+because another document will also have chunk 0.
+
+Use something like:
+
+document_uuid_chunk_0
+document_uuid_chunk_1
+document_uuid_chunk_2
+
+So your chunks need a document ID before they reach ChromaDB.
+
+5. Metadata
+
+Store the metadata you already decided on:
+
+{
+    "filename": "paper.pdf",
+    "file_size": 245760,
+    "format": ".pdf"
+}
+
+Later you can add:
+
+page
+section
+chunk_index
+
+when your parser/chunker supports them.
+
+6. Define the search() function
+
+Don't implement the full RAG retrieval yet, but make the database capable of querying.
+
+Input:
+
+query_embedding
+
+and:
+
+k=5
+
+Output should contain:
+
+[
+    {
+        "text": "...",
+        "metadata": {...},
+        "distance": 0.12
+    }
+]
+
+The retriever will later consume this.
+
+7. Define a delete function
+
+You should also have:
+
+delete(document_id)
+
+This becomes important when a user removes a document.
+
+It should delete all chunks belonging to that document.
+
+Final interface
+
+I'd design chroma_db.py around these functions:
+
+initialize()
+    ↓
+get_collection()
+
+add(chunks)
+    ↓
+search(query_embedding, k)
+    ↓
+delete(document_id)
+
+Your overall flow becomes:
+
+Parser
+   ↓
+Chunker
+   ↓
+Embedder
+   ↓
+chroma_db.add()
+   ↓
+ChromaDB
+
+And later:
+
+User Question
+      ↓
+Embed Query
+      ↓
+chroma_db.search()
+      ↓
+Relevant Chunks
+      ↓
+LLM
+One important design decision
+
+I would not put the embedding model inside chroma_db.py. You already have embedder.py.
+
+chroma_db.py should receive embeddings and store them. This keeps the separation:
+
+embedder.py  → "How do I create vectors?"
+chroma_db.py → "How do I store/search vectors?"

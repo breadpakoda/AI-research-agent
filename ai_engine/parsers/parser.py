@@ -33,3 +33,6 @@ def parse(file_name):
     return {"content": content, "metadata": metadata}
 
 
+# print(parse("parsers/langchain.docx"))
+
+
